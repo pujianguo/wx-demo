@@ -1,7 +1,7 @@
 <view class="container">
   <image class="user-avatar" src="/images/avatar/avatar.jpeg"></image>
   <text class="user-nickname">Hello, Raul</text>
-  <view class="usermotto">
+  <view class="usermotto" bindtap="onTap">
     <text class="user-motto">开启小程序之旅</text>
   </view>
 </view>
