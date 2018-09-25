@@ -22,7 +22,10 @@ Page({
     //   postList: localData.postList
     // })
   },
-  onPostTap (id) {
-    console.log('aaaa', id)
+  onPostTap (event) {
+    let postId = event.currentTarget.dataset.postid
+    wx.navigateTo({
+      url: 'post-detail/post-detail?id=' + postId
+    })
   }
 })
