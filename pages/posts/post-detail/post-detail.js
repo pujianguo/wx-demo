@@ -1,4 +1,6 @@
 let localData = require('../../../data/post.js')
+let app = getApp()
+
 Page({
   data: {
     postData: null,
@@ -27,6 +29,28 @@ Page({
       postsCollected[postId] = false
       wx.setStorageSync('posts_collected', postsCollected)
     }
+
+    if (app.globalData.g_isPlayingMusic && app.globalData.g_currentMusicPostId === postId) {
+      this.setData({
+        isPlayingMusic: true
+      })
+    }
+    // 监听音乐停止、播放
+    const backgroundAudioManager = wx.getBackgroundAudioManager()
+    backgroundAudioManager.onPlay(() => {
+      this.setData({
+        isPlayingMusic: true
+      })
+      app.globalData.g_isPlayingMusic = true
+      app.globalData.g_currentMusicPostId = postId
+    })
+    backgroundAudioManager.onPause(() => {
+      this.setData({
+        isPlayingMusic: false
+      })
+      app.globalData.g_isPlayingMusic = false
+      app.globalData.g_currentMusicPostId = null
+    })
   },
   onCollectionTap: function(event) {
     let postsCollected = wx.getStorageSync('posts_collected')
@@ -74,11 +98,14 @@ Page({
       })
 
     } else {
-      backgroundAudioManager.title = '此时此刻'
-      backgroundAudioManager.epname = '此时此刻'
-      backgroundAudioManager.singer = '许巍'
-      backgroundAudioManager.coverImgUrl = 'http://y.gtimg.cn/music/photo_new/T002R300x300M000003rsKF44GyaSk.jpg?max_age=2592000'
+      let music = this.data.postData.music
+      let [title, singer] = music.title.split('-')
+      backgroundAudioManager.title = title
+      // backgroundAudioManager.epname = music.title
+      backgroundAudioManager.singer = singer
+      backgroundAudioManager.coverImgUrl = music.coverImgUrl
       // 设置了 src 之后会自动播放
+      // backgroundAudioManager.coverImgUrl = music.url // 资源无效
       backgroundAudioManager.src = 'http://ws.stream.qqmusic.qq.com/M500001VfvsJ21xFqb.mp3?guid=ffffffff82def4af4b12b3cd9337d5e7&uin=346897220&vkey=6292F51E1E384E061FF02C31F716658E5C81F5594D561F2E88B854E81CAAB7806D5E4F103E55D33C16F3FAC506D1AB172DE8600B37E43FAD&fromtag=46'
       // backgroundAudioManager.play()
 
