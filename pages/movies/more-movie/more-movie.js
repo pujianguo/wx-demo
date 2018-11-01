@@ -1,4 +1,5 @@
-var util = require('../../utils/util.js')
+// pages/movies/more-movie/more-movie.js
+var util = require('../../../utils/util.js')
 
 Page({
 
@@ -6,26 +7,31 @@ Page({
    * 页面的初始数据
    */
   data: {
-    list: {
-      a: {},
-      b: {},
-      c: {}
-    }
+    movies: {},
+    category: ''
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let aUrl = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend&page_limit=3&page_start=0';
-    let bUrl = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend&page_limit=3&page_start=5';
-    let cUrl = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend&page_limit=3&page_start=10';
-    this.getApiData(aUrl, 'a', '正在热映')
-    this.getApiData(bUrl, 'b', '即将上映')
-    this.getApiData(cUrl, 'c', 'Top50')
+    let category = options.category
+    this.data.category = category
+    let url = ''
+    switch (category) {
+      case '正在热映':
+        url = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend&page_limit=20&page_start=0'
+        break;
+      case '即将上映':
+        url = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend&page_limit=20&page_start=20'
+        break;
+      case 'Top50':
+        url = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend&page_limit=20&page_start=40'
+        break;
+    }
+    this.getApiData(url)
   },
-
-  getApiData (url, type, categoryTitle) {
+  getApiData (url) {
     let that = this
     wx.request({
       url: url,
@@ -44,12 +50,9 @@ Page({
             url: x.url
           }
         })
-        let readyData = {}
-        readyData[type] = {
-          categoryTitle: categoryTitle,
+        that.setData({
           movies: data
-        }
-        that.setData(readyData)
+        })
       },
       fail: function(err) {
         console.log('request fail: ', err)
@@ -57,18 +60,14 @@ Page({
     })
   },
 
-  onMoreTap (event) {
-    let category = event.currentTarget.dataset.category
-    wx.navigateTo({
-      url: 'more-movie/more-movie?category=' + category
-    })
-  },
-
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady: function () {
-
+    // 在页面渲染完毕之后设置标题才会起作用
+    wx.setNavigationBarTitle({
+      title: this.data.category
+    })
   },
 
   /**
