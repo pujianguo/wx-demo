@@ -10,7 +10,8 @@ Page({
       a: {},
       b: {},
       c: {}
-    }
+    },
+    containerShow: true
   },
 
   /**
@@ -61,6 +62,18 @@ Page({
     let category = event.currentTarget.dataset.category
     wx.navigateTo({
       url: 'more-movie/more-movie?category=' + category
+    })
+  },
+
+  onBindFocous (event) {
+    console.log('bindfocus')
+    this.setData({
+      containerShow: false
+    })
+  },
+  onCancelImgTap (event) {
+    this.setData({
+      containerShow: true
     })
   },
 
