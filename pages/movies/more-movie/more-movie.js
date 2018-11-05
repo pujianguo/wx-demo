@@ -8,7 +8,10 @@ Page({
    */
   data: {
     movies: {},
-    category: ''
+    category: '',
+    requestUrl: '',
+    totalCount: 0,
+    isEmpty: true
   },
 
   /**
@@ -20,16 +23,18 @@ Page({
     let url = ''
     switch (category) {
       case '正在热映':
-        url = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend&page_limit=20&page_start=0'
+        url = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend'
         break;
       case '即将上映':
-        url = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend&page_limit=20&page_start=20'
+        url = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E6%9C%80%E6%96%B0&sort=recommend'
         break;
       case 'Top50':
-        url = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend&page_limit=20&page_start=40'
+        url = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%BB%8F%E5%85%B8&sort=rank'
         break;
     }
-    this.getApiData(url)
+    this.data.requestUrl = url;
+    url += '&page_start=' + this.data.totalCount + '&page_limit=20';
+    this.getApiData(url);
   },
   getApiData (url) {
     let that = this
@@ -40,24 +45,44 @@ Page({
         'Content-Type': 'json'
       },
       success: function(res){
-        let data = res.data.subjects.map(x => {
+        let movies = res.data.subjects.map(x => {
           return {
             id: x.id,
             cover: x.cover,
             rate: x.rate,
             stars: util.converToStarsArray(x.rate),
-            title: x.title,
+            title: x.title.length >= 6 ? x.title.substring(0, 6) + '...' : x.title,
             url: x.url
           }
         })
+
+        // 新数据和旧数据相加
+        let totalMovies = {}
+        if (!that.data.isEmpty) {
+          totalMovies = that.data.movies.concat(movies);
+        } else {
+          totalMovies = movies;
+          that.data.isEmpty = false;
+        }
         that.setData({
-          movies: data
+          totalCount: that.data.totalCount + 20,
+          movies: totalMovies
         })
       },
       fail: function(err) {
         console.log('request fail: ', err)
+      },
+      complete: function() {
+        wx.hideNavigationBarLoading()
       }
     })
+  },
+  onScrollLower (event) {
+    console.log('more', event)
+    let nextUrl = this.data.requestUrl +
+      '&page_start=' + this.data.totalCount + '&page_limit=20';
+    this.getApiData(nextUrl);
+    wx.showNavigationBarLoading()
   },
 
   /**
@@ -94,8 +119,14 @@ Page({
   /**
    * 页面相关事件处理函数--监听用户下拉动作
    */
-  onPullDownRefresh: function () {
-
+  onPullDownRefresh: function (event) {
+    console.log('refresh')
+    let refreshUrl = this.data.requestUrl +
+      '&page_start=0&page_limit=20';
+      // '&page_start=' + this.data.totalCount + '&page_limit=20';
+    this.data.movies = {}
+    this.data.isEmpty = true
+    this.getApiData(refreshUrl);
   },
 
   /**

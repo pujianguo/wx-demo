@@ -18,8 +18,8 @@ Page({
    */
   onLoad: function (options) {
     let aUrl = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend&page_limit=3&page_start=0';
-    let bUrl = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend&page_limit=3&page_start=5';
-    let cUrl = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend&page_limit=3&page_start=10';
+    let bUrl = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E6%9C%80%E6%96%B0&sort=recommend&page_limit=3&page_start=0';
+    let cUrl = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%BB%8F%E5%85%B8&sort=rank&page_limit=3&page_start=0';
     this.getApiData(aUrl, 'a', '正在热映')
     this.getApiData(bUrl, 'b', '即将上映')
     this.getApiData(cUrl, 'c', 'Top50')
@@ -40,7 +40,7 @@ Page({
             cover: x.cover,
             rate: x.rate,
             stars: util.converToStarsArray(x.rate),
-            title: x.title,
+            title: x.title.length >= 6 ? x.title.substring(0, 6) + '...' : x.title,
             url: x.url
           }
         })
