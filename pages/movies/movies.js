@@ -6,11 +6,10 @@ Page({
    * 页面的初始数据
    */
   data: {
-    list: {
-      a: {},
-      b: {},
-      c: {}
-    },
+    a: {},
+    b: {},
+    c: {},
+    searchResult: {},
     containerShow: true
   },
 
@@ -64,7 +63,19 @@ Page({
       url: 'more-movie/more-movie?category=' + category
     })
   },
+  onMovieTap (event) {
+    let movieId = event.currentTarget.dataset.movieid
+    wx.navigateTo({
+      url: 'movie-detail/movie-detail?id=' + movieId
+    })
+  },
 
+  onBindChange (event) {
+    let text = event.detail.value
+    console.log('change', text)
+    let url = 'https://movie.douban.com/j/search_subjects?type=movie&tag=%E7%83%AD%E9%97%A8&sort=recommend&page_limit=3&page_start=0';
+    this.getApiData(url, 'searchResult', '')
+  },
   onBindFocous (event) {
     console.log('bindfocus')
     this.setData({
