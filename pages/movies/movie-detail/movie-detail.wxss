@@ -39,6 +39,16 @@
   margin-top: 30rpx;
   margin-left: 40rpx;
 }
+.highlight-font{
+  color: #f21146;
+  font-size:22rpx;
+  margin-right: 10rpx;
+}
+.plain-font{
+  color: #666;
+  font-size:22rpx;
+  margin-right: 30rpx;
+}
 
 .movie-img{
   height: 238rpx;
@@ -85,7 +95,7 @@
 }
 .synopsis-font{
   color: #999;
-  margin-bottom: 40rpx;
+  margin-bottom: 20rpx;
 }
 .summary-content{
   margin-top: 20rpx;
@@ -102,7 +112,7 @@
 }
 .cast-font{
   color: #999;
-  margin-bottom: 40rpx;
+  margin-bottom: 20rpx;
 }
 .cast-imgs{
   white-space: nowrap;

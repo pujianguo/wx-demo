@@ -19,7 +19,7 @@
     </view>
     <view class="flex-row">
       <text class="mark">评分</text>
-      <template is="starsTemplate" data="{{stars: movie.stars, score: movie.score}}" />
+      <template is="starsTemplate" data="{{stars: movie.stars, rate: movie.rate}}" />
     </view>
     <view class="flex-row">
       <text class="mark">导演</text>
@@ -44,9 +44,9 @@
   <view class="cast">
     <text class="cast-font">影人</text>
     <scroll-view class="cast-imgs" scroll-x="true" style="width: 100%;">
-      <block wx:for="movies.castsInfo" wx:for-item="item">
+      <block wx:for="{{movie.castsInfo}}" wx:for-item="item">
         <view class="cast-container">
-          <image class="cast-img" src="item.img" />
+          <image class="cast-img" src="{{item.img}}" />
           <text class="cast-name">{{item.name}}</text>
         </view>
       </block>
